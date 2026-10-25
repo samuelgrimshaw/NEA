@@ -32,6 +32,8 @@ class NEA(ctk.CTk):
             self.openpage(currentpage, self.mainpage)
     def save_quiz_answers(self,quiz_answers):
         for question_num, answer in quiz_answers.items():
+            if not answer: # skips questions with nothing ticked (answer column is NOT NULL)
+                continue
             if isinstance(answer, list):
                 answer = ', '.join(answer)
             self.cursor.execute("INSERT INTO quiz_answers (user_id, question_num, answer) VALUES (?, ?, ?)", (self.current_user_id, question_num, answer))
@@ -71,6 +73,29 @@ class NEA(ctk.CTk):
             self.db.commit()
             return True # saved successfully
 
+    def create_tables(self): # builds the tables if login.db is new
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            Name TEXT NOT NULL,
+            Email TEXT NOT NULL UNIQUE,
+            Password TEXT NOT NULL,
+            quiz_taken BOOLEAN DEFAULT 0
+        )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS quiz_answers (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            question_num INTEGER NOT NULL,
+            answer TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS saved_universities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            university_name TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            UNIQUE (user_id, university_name)
+        )""")
+        self.db.commit()
 
     def __init__(self):
         super().__init__()
@@ -82,8 +107,7 @@ class NEA(ctk.CTk):
         #connect to db
         self.db = sqlite3.connect("login.db")
         self.cursor = self.db.cursor()
-
-        self.db.commit()
+        self.create_tables()
         self.universitylist = [
             "University of Oxford", "University of Cambridge", "Imperial College London",
             "London School of Economics", "University College London (UCL)", "University of Edinburgh",
