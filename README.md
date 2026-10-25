@@ -2,6 +2,10 @@
 
 A desktop app that helps UK students shortlist and compare universities based on what matters to them. Built in Python with CustomTkinter as my A level Computer Science NEA project.
 
+## Screenshot of home page
+<img width="2940" height="1789" alt="image" src="https://github.com/user-attachments/assets/10c6afe4-ef61-491f-9fd1-4297dda5f909" />
+
+
 
 ## Features
 
