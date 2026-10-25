@@ -100,8 +100,7 @@ class NEA(ctk.CTk):
 
     def __init__(self):
         super().__init__()
-        self.state('zoomed')          # standards across all pages
-        self.geometry('1920x1080') 
+        self.state('zoomed')          # fills the screen, whatever its size
         self.title("UniPicker")
         self.configure(fg_color="white")
         self.saved_universities = []
@@ -526,8 +525,11 @@ class mainpage(ctk.CTkFrame):
     def display_saved_universities(self):
         for widget in self.saveduniversities_content.winfo_children():
             widget.destroy()
+        if not self.controller.saved_universities: # empty state, so the panel doesn't look broken
+            ctk.CTkLabel(self.saveduniversities_content, text="No universities saved yet.\nAdd one to get started.",
+                         font=("Inter", 18), text_color="gray", justify="left").pack(padx=15, anchor="w")
         for uni in self.controller.saved_universities:
-            uni_label = ctk.CTkLabel(self.saveduniversities_content, text=uni, font=("Tahoma", 20), text_color="black", fg_color="#e8f5e9")
+            uni_label = ctk.CTkLabel(self.saveduniversities_content, text=uni, font=("Tahoma", 20), text_color="black", fg_color="transparent")
             uni_label.pack(pady=5, padx=20, anchor="w")
             # put line through when hovering over
             uni_label.bind("<Enter>", lambda event, label=uni_label: label.configure(text_color="red"))
@@ -577,53 +579,55 @@ class mainpage(ctk.CTkFrame):
         self.controller = controller
         self.controller.create_header(self) # creates header with search bar
 
-        # saved universities frame
-        self.adduniversity_frame = ctk.CTkFrame(self,corner_radius=15, border_width=1,
-        fg_color="#e8f5e9",  border_color="#c8e6c9") 
-        self.adduniversity_frame.place(relx=0.5, rely=0.35,anchor="center")
-        #saved university dropdown table
 
-        self.adduniversitydropdown_label = ctk.CTkLabel(self.adduniversity_frame, 
-        text="Add a university", font=("Inter", 50, "bold"), text_color="Black")
-        self.adduniversitydropdown_label.pack(pady=20, padx=40)
+        # saved universities panel 
+        self.saveduniversities_frame = ctk.CTkFrame(self, fg_color="white", corner_radius=15, border_width=1, border_color="#c8e6c9")
+        self.saveduniversities_frame.place(relx=0.02, rely=0.15, relwidth=0.30, relheight=0.80)
+        self.saveduniversities_label = ctk.CTkLabel(self.saveduniversities_frame, text="Saved Universities", font=("Inter", 30, "bold"), text_color="black")
+        self.saveduniversities_label.pack(pady=(25, 0), padx=25, anchor="w")
+        self.saveduniversities_hint = ctk.CTkLabel(self.saveduniversities_frame, text="Click a university to remove it", font=("Inter", 15), text_color="gray")
+        self.saveduniversities_hint.pack(padx=25, anchor="w")
+        self.saveduniversities_content = ctk.CTkFrame(self.saveduniversities_frame, fg_color="transparent")
+        self.saveduniversities_content.pack(pady=15, padx=10, fill="both", expand=True) # fills the rest of the panel
 
-        # university dropdown
+        # add a university 
+        self.adduniversity_frame = ctk.CTkFrame(self, fg_color="white", corner_radius=15, border_width=1, border_color="#c8e6c9")
+        self.adduniversity_frame.place(relx=0.34, rely=0.15, relwidth=0.31, relheight=0.38)
+        self.adduniversity_inner = ctk.CTkFrame(self.adduniversity_frame, fg_color="transparent") # keeps the contents centred in the card
+        self.adduniversity_inner.place(relx=0.5, rely=0.5, relwidth=0.85, anchor="center")
 
-        self.adduniversitydropdown = ctk.CTkOptionMenu(self.adduniversity_frame, height=50, width=300, font=("Tahoma", 20), 
-        values=self.controller.universitylist) 
-        self.adduniversitydropdown.pack(pady=20,anchor="center")
+        self.adduniversitydropdown_label = ctk.CTkLabel(self.adduniversity_inner, text="Add a university", font=("Inter", 40, "bold"), text_color="black")
+        self.adduniversitydropdown_label.pack(anchor="center", pady=(0, 20))
 
-        # button to add a university
-        self.adduniversitybtn = ctk.CTkButton(self.adduniversity_frame, text="Add",font=("Inter",20,"bold"),text_color="white",
-        cursor="hand2",fg_color="#25995e",width=300,height=60,corner_radius=12) 
-        self.adduniversitybtn.pack(pady=10,padx=0)
-        self.adduniversitybtn.bind("<Button-1>", lambda event: self.update_saved_universities()) 
+        self.adduniversitydropdown = ctk.CTkOptionMenu(self.adduniversity_inner, height=50, font=("Tahoma", 18), values=self.controller.universitylist)
+        self.adduniversitydropdown.pack(fill="x", pady=(0, 12))
 
+        self.adduniversitybtn = ctk.CTkButton(self.adduniversity_inner, text="Add",font=("Inter", 20, "bold"), text_color="white",
+        cursor="hand2", fg_color="#25995e", height=55, corner_radius=12, command=self.update_saved_universities)
+        self.adduniversitybtn.pack(fill="x", pady=(18, 0)) # extra gap below the dropdown
 
-        
-       
-        self.saveduniversities_frame = ctk.CTkFrame(self, fg_color="#e8f5e9", corner_radius=15, border_width=1, border_color="#c8e6c9") # saved universities frame
-        self.saveduniversities_frame.place(relx=0.01, rely=0.15)
-        self.saveduniversities_label = ctk.CTkLabel(self.saveduniversities_frame, text="Saved Universities", font=("Tahoma", 30, "bold"), text_color="black", fg_color="#e8f5e9")
-        self.saveduniversities_label.pack(pady=10, padx=20)
-        self.saveduniversities_content = ctk.CTkFrame(self.saveduniversities_frame, 
-                                                                fg_color="#e8f5e9", 
-                                                                width=600, height=600)
-        self.saveduniversities_content.pack(pady=10, padx=10)
+        # action tiles
+        self.comparetile = self.create_tile("Compare", lambda: self.controller.openpage(self, self.controller.comparepage))
+        self.comparetile.place(relx=0.67, rely=0.15, relwidth=0.31, relheight=0.38)
 
-        self.mapbtn = ctk.CTkButton(self,text="Map",font=("Inter",60,"bold"),text_color="white",
-        cursor="hand2",fg_color="#25995e",width=500,height=300,corner_radius=12)
-        self.mapbtn.place(relx=0.5,rely=0.75,anchor='center')
-        self.mapbtn.bind("<Button-1>", lambda event: self.controller.openpage(self,self.controller.mappage))
-        
-        self.comparebtn = ctk.CTkButton(self,text="Compare",font=("Inter",60,"bold"),text_color="white",
-        cursor="hand2",fg_color="#25995e",width=500,height=300,corner_radius=12)
-        self.comparebtn.place(relx=0.7,rely=0.2)
-        self.comparebtn.bind("<Button-1>", lambda event: self.controller.openpage(self,self.controller.comparepage))
+        self.maptile = self.create_tile("Map", lambda: self.controller.openpage(self, self.controller.mappage))
+        self.maptile.place(relx=0.34, rely=0.57, relwidth=0.31, relheight=0.38)
 
-        self.redoquizbtn = ctk.CTkButton(self,text="Redo Quiz",font=("Inter",60,"bold"),text_color="white", 
-                                         cursor="hand2",fg_color="#25995e",width=500,height=300,corner_radius=12, command= lambda: self.redo_quiz())
-        self.redoquizbtn.place(relx=0.7,rely=0.6)
+        self.redoquiztile = self.create_tile("Redo Quiz", self.redo_quiz, primary=False)
+        self.redoquiztile.place(relx=0.67, rely=0.57, relwidth=0.31, relheight=0.38)
+
+    def create_tile(self, title, command, primary=True):
+        colour = "#25995e" if primary else "white"
+        hover = "#1e7f4e" if primary else "#f1f8f2"
+        text_colour = "white" if primary else "#25995e"
+        tile = ctk.CTkFrame(self, fg_color=colour, corner_radius=15, border_width=0 if primary else 2, border_color="#25995e", cursor="hand2")
+        title_label = ctk.CTkLabel(tile, text=title, font=("Inter", 40, "bold"), text_color=text_colour, cursor="hand2")
+        title_label.place(relx=0.5, rely=0.5, anchor="center")
+        for widget in (tile, title_label): # clicking anywhere on the tile works
+            widget.bind("<Button-1>", lambda event: command())
+            widget.bind("<Enter>", lambda event: tile.configure(fg_color=hover))
+            widget.bind("<Leave>", lambda event: tile.configure(fg_color=colour))
+        return tile
 
 
 
@@ -633,10 +637,10 @@ class mappage(ctk.CTkFrame):
         super().__init__(parent)
         self.controller = controller                
         self.configure(fg_color="#e8f5e9") # body background   
-        self.map_widget = tkintermapview.TkinterMapView(self, width=1000, height=900, corner_radius=2)
+        self.map_widget = tkintermapview.TkinterMapView(self, corner_radius=2)
         self.map_widget.set_position(54.0021959912, -2.54204416515)
         self.map_widget.set_zoom(6)
-        self.map_widget.place(relx=0.7, rely=0.5, anchor="center")
+        self.map_widget.place(relx=0.5, rely=0.5, relwidth=0.9, relheight=0.9, anchor="center") # 90% of the window on any screen
 
     def update_map(self,postcode,unis):
         if not postcode:
