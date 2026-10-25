@@ -6,6 +6,7 @@ import hashlib #hashes
 import json
 import tkintermapview #map view
 import pgeocode #postcode to coordinate
+import math
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("green")
 
@@ -626,7 +627,8 @@ class mainpage(ctk.CTkFrame):
 
 class mappage(ctk.CTkFrame):
     def __init__(self,parent,controller):
-        super().__init__(parent)                
+        super().__init__(parent)
+        self.controller = controller                
         self.configure(fg_color="#e8f5e9") # body background   
         self.map_widget = tkintermapview.TkinterMapView(self, width=1000, height=900, corner_radius=2)
         self.map_widget.set_position(54.0021959912, -2.54204416515)
@@ -634,8 +636,12 @@ class mappage(ctk.CTkFrame):
         self.map_widget.place(relx=0.7, rely=0.5, anchor="center")
 
     def update_map(self,postcode,unis):
+        if not postcode:
+            return
         nomi = pgeocode.Nominatim("GB") 
         location = nomi.query_postal_code(postcode)
+        if math.isnan(location.latitude):
+            return
 
         self.home_marker = self.map_widget.set_marker(location.latitude, location.longitude) 
         self.home_marker.set_text("Home")
