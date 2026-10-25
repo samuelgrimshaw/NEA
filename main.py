@@ -679,7 +679,7 @@ class comparepage(ctk.CTkFrame):
         financial_info = answers.get(4)
         if financial_info:
             if financial_info == "Yes":
-                sections.append(("Financial support" + "\n" + (data["financial_support_info"])))
+                sections.append(("Financial support",(data["financial_support_info"])))
 
 
         nightlife_answer = answers.get(8)
