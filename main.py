@@ -747,7 +747,7 @@ class comparepage(ctk.CTkFrame):
         for title, content in self.sections_sorted:
             title_label = ctk.CTkLabel(resultsframe, text=title, font=("Tahoma", 22, "bold"), text_color="#25995e", fg_color="transparent")
             title_label.pack(anchor="w", pady=(10, 0), padx=20)
-            content_label = ctk.CTkLabel(resultsframe, text=content, font=("Tahoma", 16), text_color="black", fg_color="#transparent", wraplength=400, justify="left")
+            content_label = ctk.CTkLabel(resultsframe, text=content, font=("Tahoma", 16), text_color="black", fg_color="transparent", wraplength=400, justify="left")
             content_label.pack(anchor="w", pady=(0, 10), padx=40)
         
     def __init__(self,parent,controller):
