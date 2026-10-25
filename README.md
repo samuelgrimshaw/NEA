@@ -1,4 +1,4 @@
-# UniPicker
+# UniPicker (In progress)
 
 A desktop app that helps UK students shortlist and compare universities based on what matters to them. Built in Python with CustomTkinter as my A level Computer Science NEA project.
 
