@@ -12,10 +12,4 @@ __pycache__/
 *.db
 *.sqbpro
 
-# other
-remindme/
-UniPicker/
-ChessEngine/
-CommandLineExpenseTracker/
-GreggsNewShopFinder/
-tests/
+
