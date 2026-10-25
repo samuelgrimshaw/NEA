@@ -12,12 +12,12 @@ A desktop app that helps UK students shortlist and compare universities based on
 - **Accounts:** sign up and log in, with input validation and hashed passwords stored in SQLite
 - **Preference quiz:** 9 questions covering location, city vs campus, cost, nightlife and extracurriculars
 - **Saved universities:** build a shortlist, which is stored per user
-- **Side-by-side comparison:** compare two universities, with sections ordered by your quiz answers (if cost matters most to you, costs come first)
+- **Side-by-side comparison:** compare two universities, with sections personalized based on your quiz answers (if cost matters most to you, costs come first)
 - **Map view:** shows your home postcode on a map (in progress)
 
 ## Tech
 
-- Python 3, [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) for the UI
+- Python 3, [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)(UI)
 - SQLite (`sqlite3`) for users, quiz answers and saved universities
 - [tkintermapview](https://github.com/TomSchimansky/TkinterMapView) and [pgeocode](https://github.com/symerio/pgeocode) for the map and postcode lookup
 - University data for 10 UK universities in `university_data.json`
@@ -34,9 +34,6 @@ A desktop app that helps UK students shortlist and compare universities based on
 
 The database (`login.db`) is created automatically on first run.
 
-## What I learned
-
-- (2–3 bullets in your own words, for example: structuring a multi-page GUI, designing a database schema, why passwords are hashed)
 
 ## Planned improvements
 
