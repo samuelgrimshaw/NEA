@@ -478,6 +478,9 @@ class quizpage(ctk.CTkFrame):
             self.controller.save_quiz_answers(self.quiz_answers) # saves quiz answers to db
             self.controller.cursor.execute("UPDATE users SET quiz_taken = 1 WHERE id = ?", (self.controller.current_user_id,)); self.controller.db.commit()
 
+
+            self.controller.load_quiz_answers()
+            self.controller.mappage.update_map(self.controller.quiz_answers.get(3), self.controller.saved_universities)
             saved_unis = self.quiz_answers.get(1) # gets saved universities from quiz answers
             if saved_unis: #if it exists 
                 for uni in saved_unis: # for each one
@@ -742,9 +745,9 @@ class comparepage(ctk.CTkFrame):
             widget.destroy()
 
         for title, content in self.sections_sorted:
-            title_label = ctk.CTkLabel(resultsframe, text=title, font=("Tahoma", 22, "bold"), text_color="#25995e", fg_color="#f5f5f5")
+            title_label = ctk.CTkLabel(resultsframe, text=title, font=("Tahoma", 22, "bold"), text_color="#25995e", fg_color="transparent")
             title_label.pack(anchor="w", pady=(10, 0), padx=20)
-            content_label = ctk.CTkLabel(resultsframe, text=content, font=("Tahoma", 16), text_color="black", fg_color="#f5f5f5", wraplength=400, justify="left")
+            content_label = ctk.CTkLabel(resultsframe, text=content, font=("Tahoma", 16), text_color="black", fg_color="#transparent", wraplength=400, justify="left")
             content_label.pack(anchor="w", pady=(0, 10), padx=40)
         
     def __init__(self,parent,controller):
